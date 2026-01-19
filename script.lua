@@ -1,93 +1,68 @@
--- [[ TPS: ELITE HITBOX & UTILITY V6.0 ]] --
--- Optimized for iPhone 17 & Delta
+-- [[ TOUCH FOOTBALL: FULL GHOST & HITBOX V7.0 ]] --
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "⚽ ELITE HITBOX V6.0",
-   LoadingTitle = "Kenan Ultimate System",
-   LoadingSubtitle = "Görünmezlik & Hitbox Eklendi",
+   Name = "⚽ TOUCH FOOTBALL ELITE",
+   LoadingTitle = "Full Ghost & Touch Fix",
+   LoadingSubtitle = "Kenan Ultimate Edition",
    ConfigurationSaving = { Enabled = false }
 })
 
 -- // AYARLAR
-_G.HitboxLen = 12
-_G.PushForce = 55
+_G.HitboxLen = 15
+_G.PushForce = 60
 _G.ShowHitbox = true
-_G.WalkSpeed = 16
-_G.JumpPower = 50
-_G.Invisibility = false
+_G.WalkSpeed = 20
+_G.FullInvis = false
 
--- // ANA MENÜ (HITBOX)
-local MainTab = Window:CreateTab("🛡️ Hitbox & Şut", 4483362458)
+local MainTab = Window:CreateTab("🛡️ Hitbox & Top", 4483362458)
 
 MainTab:CreateSlider({
-   Name = "Hitbox Uzunluğu (Reach)",
-   Range = {0, 40},
+   Name = "Hitbox Menzili",
+   Range = {0, 50},
    Increment = 1,
-   CurrentValue = 12,
+   CurrentValue = 15,
    Callback = function(v) _G.HitboxLen = v end,
 })
 
-MainTab:CreateSlider({
-   Name = "Vuruş Gücü",
-   Range = {0, 300},
-   Increment = 5,
-   CurrentValue = 55,
-   Callback = function(v) _G.PushForce = v end,
-})
-
-MainTab:CreateToggle({
-   Name = "Hitboxı Göster (Kırmızı Alan)",
-   CurrentValue = true,
-   Callback = function(v) _G.ShowHitbox = v end,
-})
-
--- // KARAKTER MENÜSÜ (GÖRÜNMEZLİK & HIZ)
+-- // KARAKTER MENÜSÜ (TAM GÖRÜNMEZLİK)
 local PlayerTab = Window:CreateTab("👤 Karakter", 4483362458)
 
 PlayerTab:CreateToggle({
-   Name = "Görünmezlik (Semi-Invisible)",
+   Name = "TAM GÖRÜNMEZLİK (Full Invisible)",
    CurrentValue = false,
    Callback = function(v)
-       _G.Invisibility = v
+       _G.FullInvis = v
        local char = game.Players.LocalPlayer.Character
        if char then
            for _, part in pairs(char:GetDescendants()) do
                if part:IsA("BasePart") or part:IsA("Decal") then
-                   part.Transparency = v and 0.7 or 0
+                   -- Eğer aktifse tamamen 1 (Görünmez), değilse 0 (Görünür)
+                   part.Transparency = v and 1 or 0
                end
+           end
+           -- İsmini de gizlemeye çalışır (Sadece sende ve basit korumalarda gözükmez)
+           if char:FindFirstChild("Head") and char.Head:FindFirstChild("NameTag") then
+                char.Head.NameTag.Enabled = not v
            end
        end
    end,
 })
 
 PlayerTab:CreateSlider({
-   Name = "Yürüme Hızı",
-   Range = {16, 120},
+   Name = "Hız",
+   Range = {16, 150},
    Increment = 1,
-   CurrentValue = 16,
+   CurrentValue = 20,
    Callback = function(v) _G.WalkSpeed = v end,
 })
 
-PlayerTab:CreateButton({
-   Name = "Anti-AFK Aktif Et",
-   Callback = function()
-       local vu = game:GetService("VirtualUser")
-       game.Players.LocalPlayer.Idled:Connect(function()
-           vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-           wait(1)
-           vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
-       end)
-       Rayfield:Notify({Title = "Anti-AFK", Content = "Artık oyundan atılmayacaksın!", Duration = 2})
-   end,
-})
-
--- // SİSTEM DÖNGÜSÜ (RENDERSTEPPED)
+-- // TOUCH FOOTBALL ÖZEL DOKUNMA MANTIĞI
 local box = Instance.new("Part")
-box.Name = "TPS_Hitbox"
+box.Name = "Touch_Hitbox"
 box.Anchored = true
 box.CanCollide = false
-box.Color = Color3.fromRGB(255, 0, 0)
+box.Color = Color3.fromRGB(0, 255, 255) -- Farklılık olsun diye Turkuaz yaptım
 box.Material = Enum.Material.ForceField
 box.Parent = workspace
 
@@ -97,21 +72,23 @@ game:GetService("RunService").RenderStepped:Connect(function()
     
     if char and char:FindFirstChild("HumanoidRootPart") and char:FindFirstChild("Humanoid") then
         local hrp = char.HumanoidRootPart
-        local hum = char.Humanoid
+        char.Humanoid.WalkSpeed = _G.WalkSpeed
         
-        -- Hız Ayarı
-        hum.WalkSpeed = _G.WalkSpeed
-        
-        -- Hitbox Konumu
-        box.Size = Vector3.new(12, 6, _G.HitboxLen)
-        box.CFrame = hrp.CFrame * CFrame.new(0, 0, -(_G.HitboxLen / 2 + 2))
+        -- Hitbox'ı karakterin önüne sabitle
+        box.Size = Vector3.new(15, 8, _G.HitboxLen)
+        box.CFrame = hrp.CFrame * CFrame.new(0, 0, -(_G.HitboxLen / 2 + 1))
         box.Transparency = _G.ShowHitbox and 0.8 or 1
         
-        -- Hitbox Etkileşimi
-        local parts = workspace:GetPartBoundsInBox(box.CFrame, box.Size)
-        for _, part in pairs(parts) do
-            if part:IsA("BasePart") and (part.Name:lower():find("ball") or part.Name:lower():find("foot")) then
-                part.AssemblyLinearVelocity = hrp.CFrame.LookVector * _G.PushForce
+        -- Touch Football için topu her yerde ara (Workspace ve Players içi)
+        for _, obj in pairs(workspace:GetDescendants()) do
+            if obj:IsA("BasePart") and (obj.Name:lower():find("ball") or obj.Name:lower():find("foot")) then
+                local mag = (box.Position - obj.Position).Magnitude
+                if mag < (_G.HitboxLen / 2 + 3) then
+                    -- Topa dokunmayı simüle et ve fırlat
+                    obj.AssemblyLinearVelocity = hrp.CFrame.LookVector * _G.PushForce
+                    -- Eğer top birine "attach" edildiyse bağını koparmaya zorla
+                    if obj:FindFirstChild("BodyPosition") then obj.BodyPosition:Destroy() end
+                end
             end
         end
     else
@@ -119,4 +96,4 @@ game:GetService("RunService").RenderStepped:Connect(function()
     end
 end)
 
-Rayfield:Notify({Title = "V6.0 YÜKLENDİ", Content = "Görünmezlik ve Hitbox aktif kanka!", Duration = 5})
+Rayfield:Notify({Title = "V7.0 AKTİF", Content = "Touch Football Modu ve Tam Görünmezlik yüklendi.", Duration = 5})
