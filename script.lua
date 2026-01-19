@@ -1,143 +1,164 @@
--- 👵 Babaanne Yarı-Aura (SADECE SEN, HASAR YOK)
-local Players=game:GetService("Players")
-local RS=game:GetService("RunService")
-local UIS=game:GetService("UserInputService")
-local p=Players.LocalPlayer
-local cam=workspace.CurrentCamera
-local c=p.Character or p.CharacterAdded:Wait()
-local h=c:WaitForChild("Humanoid")
-local r=c:WaitForChild("HumanoidRootPart")
+-- [[ TPS: ELITE STRIKER ULTIMATE EDITION - V3.0 ]] --
+-- Optimized for iPhone 17 (A19 Pro) & Android Flagships
+-- GitHub: https://github.com/kenanyaygel12-jpg/Script
 
-------------------------------------------------
--- GUI (Mobil, ölçekli)
-------------------------------------------------
-local g=Instance.new("ScreenGui",p.PlayerGui); g.ResetOnSpawn=false
-local sc=Instance.new("UIScale",g)
-local function scale()
-	local v=cam.ViewportSize
-	sc.Scale=UIS.TouchEnabled and (v.X<700 and .85 or v.X<1000 and .95 or 1.05) or 1
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "⚽ TPS: ELITE ULTIMATE V3.0",
+   LoadingTitle = "Kenan Elite Scripting",
+   LoadingSubtitle = "iPhone 17 Pro Max Edition",
+   ConfigurationSaving = { Enabled = true, FileName = "KenanTPS_Config" },
+   Discord = { Enabled = false, Invite = "none", RememberJoins = true },
+   KeySystem = false
+})
+
+-- // DEĞİŞKENLER VE AYARLAR
+_G.Reach = 12
+_G.Power = 180
+_G.AutoShot = true
+_G.InfiniteJump = false
+_G.AntiAFK = true
+_G.WalkSpeed = 16
+_G.JumpPower = 50
+_G.Invisibility = false
+_G.GK_Mode = false
+
+-- // ANA MENÜ SEKİMESİ
+local MainTab = Window:CreateTab("🎯 Forvet Modu", 4483362458)
+MainTab:CreateSection("Şut ve Gol Ayarları")
+
+MainTab:CreateToggle({
+   Name = "Otomatik Gol Sistemi (Aimbot)",
+   CurrentValue = true,
+   Callback = function(Value) _G.AutoShot = Value end,
+})
+
+MainTab:CreateSlider({
+   Name = "Vuruş Menzili (Reach)",
+   Range = {0, 50},
+   Increment = 1,
+   CurrentValue = 12,
+   Callback = function(Value) _G.Reach = Value end,
+})
+
+MainTab:CreateSlider({
+   Name = "Vuruş Gücü (Power)",
+   Range = {100, 500},
+   Increment = 10,
+   CurrentValue = 180,
+   Callback = function(Value) _G.Power = Value end,
+})
+
+-- // KARAKTER SEKİMESİ
+local PlayerTab = Window:CreateTab("👤 Karakter", 4483362458)
+PlayerTab:CreateSection("Fiziksel Özellikler")
+
+PlayerTab:CreateSlider({
+   Name = "Yürüme Hızı",
+   Range = {16, 150},
+   Increment = 1,
+   CurrentValue = 16,
+   Callback = function(Value) 
+       _G.WalkSpeed = Value
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value 
+   end,
+})
+
+PlayerTab:CreateSlider({
+   Name = "Zıplama Gücü",
+   Range = {50, 200},
+   Increment = 5,
+   CurrentValue = 50,
+   Callback = function(Value) 
+       _G.JumpPower = Value
+       game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value 
+   end,
+})
+
+PlayerTab:CreateToggle({
+   Name = "Sınırsız Zıplama",
+   CurrentValue = false,
+   Callback = function(Value) _G.InfiniteJump = Value end,
+})
+
+-- // ÖZEL MODLAR SEKİMESİ
+local MiscTab = Window:CreateTab("🌟 Özel Modlar", 4483362458)
+
+MiscTab:CreateToggle({
+   Name = "Kaleci Modu (Büyük Reach)",
+   CurrentValue = false,
+   Callback = function(Value) 
+       _G.GK_Mode = Value
+       if Value then _G.Reach = 40 else _G.Reach = 12 end
+   end,
+})
+
+MiscTab:CreateButton({
+   Name = "Görünmezlik (Invisibility)",
+   Callback = function()
+       local char = game.Players.LocalPlayer.Character
+       for _, v in pairs(char:GetDescendants()) do
+           if v:IsA("BasePart") or v:IsA("Decal") then
+               v.Transparency = 0.5
+           end
+       end
+       Rayfield:Notify({Title = "Görünmezlik", Content = "Yarı şeffaf oldun kanka!", Duration = 2})
+   end,
+})
+
+-- // SİSTEM ÇALIŞTIRICILARI (DÖNGÜLER)
+
+-- Infinite Jump Logic
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if _G.InfiniteJump then
+        game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState("Jumping")
+    end
+end)
+
+-- Anti-AFK Logic
+if _G.AntiAFK then
+    local vu = game:GetService("VirtualUser")
+    game:GetService("Players").LocalPlayer.Idled:Connect(function()
+        vu:Button2Down(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+        wait(1)
+        vu:Button2Up(Vector2.new(0,0),workspace.CurrentCamera.CFrame)
+    end)
 end
-scale(); cam:GetPropertyChangedSignal("ViewportSize"):Connect(scale)
 
-local f=Instance.new("Frame",g)
-f.Size=UDim2.new(.9,0,.5,0); f.Position=UDim2.new(.05,0,.45,0)
-f.BackgroundColor3=Color3.fromRGB(25,25,25); f.Active=true; f.Draggable=true
-Instance.new("UICorner",f).CornerRadius=UDim.new(0,16)
-
-local top=Instance.new("Frame",f); top.Size=UDim2.new(1,0,0,40); top.BackgroundTransparency=1
-local title=Instance.new("TextLabel",top)
-title.Size=UDim2.new(1,-50,1,0); title.Position=UDim2.new(0,10,0,0)
-title.Text="👵 Babaanne • Yarı Aura"; title.TextScaled=true; title.TextColor3=Color3.new(1,1,1)
-title.BackgroundTransparency=1; title.TextXAlignment=0
-local min=Instance.new("TextButton",top)
-min.Size=UDim2.new(0,40,0,28); min.Position=UDim2.new(1,-45,.5,-14)
-min.Text="-"; min.TextScaled=true; min.BackgroundColor3=Color3.fromRGB(60,60,60)
-min.TextColor3=Color3.new(1,1,1); Instance.new("UICorner",min).CornerRadius=UDim.new(0,10)
-
-local grid=Instance.new("UIGridLayout",f)
-grid.CellSize=UDim2.new(.45,0,.18,0); grid.CellPadding=UDim2.new(.05,0,.05,0)
-grid.StartCorner=Enum.StartCorner.BottomLeft
-
-local function btn(t)
-	local b=Instance.new("TextButton",f)
-	b.Text=t; b.TextScaled=true; b.BackgroundColor3=Color3.fromRGB(45,45,45)
-	b.TextColor3=Color3.new(1,1,1); Instance.new("UICorner",b).CornerRadius=UDim.new(0,12)
-	return b
-end
-
-local flyB=btn("🕊️ Fly: Kapalı")
-local invB=btn("👻 Invis")
-local reachB=btn("✋ Reach: Kapalı")
-local auraB=btn("🧲 Yarı Aura: Kapalı")
-
-------------------------------------------------
--- 🕊️ Süresiz Uçma
-------------------------------------------------
-local flying=false; local bv
-flyB.MouseButton1Click:Connect(function()
-	flying=not flying
-	if flying then
-		bv=Instance.new("BodyVelocity",r)
-		bv.MaxForce=Vector3.new(1e6,1e6,1e6); bv.Velocity=Vector3.new(0,60,0)
-		flyB.Text="🕊️ Fly: Açık"
-	else
-		if bv then bv:Destroy() end; flyB.Text="🕊️ Fly: Kapalı"
-	end
+-- Şut Mekanizması
+game:GetService("UserInputService").InputBegan:Connect(function(input, gpe)
+    if gpe or not _G.AutoShot then return end
+    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local p = game.Players.LocalPlayer
+        local char = p.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            for _, v in pairs(game.Workspace:GetDescendants()) do
+                if (v.Name == "Ball" or v.Name:lower():find("ball")) and v:IsA("BasePart") then
+                    local dist = (char.HumanoidRootPart.Position - v.Position).Magnitude
+                    if dist <= _G.Reach then
+                        -- En yakın kaleyi bul
+                        local target = game.Workspace:FindFirstChild("Away Goal") or game.Workspace:FindFirstChild("Home Goal")
+                        if target then
+                            v.Velocity = (target.Position - v.Position).Unit * _G.Power
+                            Rayfield:Notify({Title = "GOL!", Content = "Hedefe kitlendi!", Duration = 1})
+                        end
+                    end
+                end
+            end
+        end
+    end
 end)
 
-------------------------------------------------
--- 👻 Süreli Görünmezlik
-------------------------------------------------
-local invReady=true
-invB.MouseButton1Click:Connect(function()
-	if not invReady then return end; invReady=false
-	for _,v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.Transparency=1 end end
-	task.delay(4,function()
-		for _,v in pairs(c:GetDescendants()) do if v:IsA("BasePart") then v.Transparency=0 end end
-	end)
-	task.delay(6,function() invReady=true end)
+-- WalkSpeed Fix (Karakter ölünce gitmesin diye)
+game:GetService("RunService").RenderStepped:Connect(function()
+    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
+    end
 end)
 
-------------------------------------------------
--- ✋ Süresiz Reach (manuel vurman için)
-------------------------------------------------
-local reachOn=false; local REACH_STUD=10
-reachB.MouseButton1Click:Connect(function()
-	reachOn=not reachOn
-	for _,v in pairs(c:GetChildren()) do
-		if v:IsA("Tool") and v:FindFirstChild("Handle") then
-			v.Handle.Size=reachOn and Vector3.new(REACH_STUD,REACH_STUD,REACH_STUD) or Vector3.new(1,1,1)
-		end
-	end
-	reachB.Text=reachOn and "✋ Reach: Açık" or "✋ Reach: Kapalı"
-end)
-
-------------------------------------------------
--- 🧲 YARI AURA (VURMAZ)
--- Yakını algılar, kamerayı yumuşak çevirir, uyarı verir
-------------------------------------------------
-local auraOn=false; local conn
-local AURA_RANGE=14
-
-local function closest()
-	local d=math.huge; local t=nil
-	for _,pl in pairs(Players:GetPlayers()) do
-		if pl~=p and pl.Character and pl.Character:FindFirstChild("HumanoidRootPart") then
-			local m=(pl.Character.HumanoidRootPart.Position-r.Position).Magnitude
-			if m<d then d=m; t=pl.Character.HumanoidRootPart end
-		end
-	end
-	return t,d
-end
-
-auraB.MouseButton1Click:Connect(function()
-	auraOn=not auraOn
-	auraB.Text=auraOn and "🧲 Yarı Aura: Açık" or "🧲 Yarı Aura: Kapalı"
-	if auraOn then
-		conn=RS.RenderStepped:Connect(function()
-			local t,d=closest()
-			if t and d<=AURA_RANGE then
-				cam.CFrame=cam.CFrame:Lerp(CFrame.new(cam.CFrame.Position,t.Position),0.18)
-				f.BackgroundColor3=Color3.fromRGB(35,25,25) -- yakın uyarı
-			else
-				f.BackgroundColor3=Color3.fromRGB(25,25,25)
-			end
-		end)
-	else
-		if conn then conn:Disconnect() conn=nil end
-		f.BackgroundColor3=Color3.fromRGB(25,25,25)
-	end
-end)
-
-------------------------------------------------
--- Minimize
-------------------------------------------------
-local mn=false
-min.MouseButton1Click:Connect(function()
-	mn=not mn
-	for _,v in pairs(f:GetChildren()) do
-		if v~=top and v~=grid then v.Visible=not mn end
-	end
-	f.Size=mn and UDim2.new(.9,0,0,40) or UDim2.new(.9,0,.5,0)
-	min.Text=mn and "+" or "-"
-end)
+Rayfield:Notify({
+   Title = "SİSTEM AKTİF",
+   Content = "Kenan Elite Hub v3.0 Başarıyla Yüklendi.",
+   Duration = 5
+})
