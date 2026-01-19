@@ -1,93 +1,68 @@
--- [[ TPS: ELITE STRIKER V3.5 - ABSOLUTE REACH FIX ]] --
+-- [[ TPS: DIRECTIONAL HITBOX V5.0 ]] --
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
-   Name = "⚽ ULTIMATE FIX V3.5",
-   LoadingTitle = "Kenan Pro Script",
-   LoadingSubtitle = "iPhone 17 & Delta Optimized",
-   ConfigurationSaving = { Enabled = true, FileName = "EliteUltimate" }
+   Name = "⚽ HITBOX SYSTEM V5.0",
+   LoadingTitle = "Kenan Hitbox Fix",
+   LoadingSubtitle = "iPhone 17 & Delta",
+   ConfigurationSaving = { Enabled = false }
 })
 
-_G.Reach = 15
-_G.Power = 200
-_G.AutoShot = true
-_G.WalkSpeed = 25
+_G.HitboxLen = 10 -- Hitbox Uzunluğu
+_G.HitboxWidth = 10 -- Hitbox Genişliği
+_G.PushForce = 50 -- İtme Gücü
+_G.ShowHitbox = true -- Hitbox'ı görmek için
 
--- // TOPU BULMA FONKSİYONU (Gelişmiş)
-local function FindBall()
-    for _, v in pairs(game.Workspace:GetDescendants()) do
-        if v:IsA("BasePart") and (v.Name:lower():find("ball") or v.Name:lower():find("foot") or v:FindFirstChild("BallTag")) then
-            return v
-        end
-    end
-    return nil
-end
+local Tab = Window:CreateTab("🛡️ Hitbox Ayar", 4483362458)
 
-local MainTab = Window:CreateTab("🎯 Ana Menü", 4483362458)
-
-MainTab:CreateSlider({
-   Name = "Vuruş Menzili (Reach)",
-   Range = {0, 50},
+Tab:CreateSlider({
+   Name = "Hitbox Uzunluğu (Öne Doğru)",
+   Range = {0, 30},
    Increment = 1,
-   CurrentValue = 15,
-   Callback = function(Value) _G.Reach = Value end,
+   CurrentValue = 10,
+   Callback = function(v) _G.HitboxLen = v end,
 })
 
-MainTab:CreateSlider({
-   Name = "Şut Gücü",
-   Range = {100, 600},
-   Increment = 10,
-   CurrentValue = 200,
-   Callback = function(Value) _G.Power = Value end,
+Tab:CreateToggle({
+   Name = "Hitbox Görünürlüğü",
+   CurrentValue = true,
+   Callback = function(v) _G.ShowHitbox = v end,
 })
 
--- // ASIL VURUŞ MEKANİZMASI (REACH BURADA)
-game:GetService("UserInputService").InputBegan:Connect(function(input, gpe)
-    if gpe or not _G.AutoShot then return end
-    
-    -- Ekrana her dokunduğunda çalışır
-    if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-        local p = game.Players.LocalPlayer
-        local ball = FindBall()
+-- // HITBOX OLUŞTURMA VE TAKİP
+local lp = game.Players.LocalPlayer
+local rs = game:GetService("RunService")
+
+-- Görsel Hitbox (Kırmızı kutu)
+local box = Instance.new("Part")
+box.Name = "TPS_Hitbox"
+box.Anchored = true
+box.CanCollide = false
+box.Color = Color3.fromRGB(255, 0, 0)
+box.Material = Enum.Material.ForceField
+box.Parent = workspace
+
+rs.RenderStepped:Connect(function()
+    local char = lp.Character
+    if char and char:FindFirstChild("HumanoidRootPart") then
+        local hrp = char.HumanoidRootPart
         
-        if ball and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-            local dist = (p.Character.HumanoidRootPart.Position - ball.Position).Magnitude
-            
-            if dist <= _G.Reach then
-                local target = game.Workspace:FindFirstChild("Away Goal") or game.Workspace:FindFirstChild("Home Goal")
-                if target then
-                    -- 3 FARKLI YÖNTEMLE VUR (Biri mutlaka tutar)
-                    local dir = (target.Position - ball.Position).Unit * _G.Power
-                    
-                    ball.AssemblyLinearVelocity = dir -- Yöntem 1 (Modern)
-                    ball.Velocity = dir -- Yöntem 2 (Eski)
-                    
-                    -- Yöntem 3: Fiziksel itme (BodyVelocity)
-                    local bv = Instance.new("BodyVelocity")
-                    bv.Velocity = dir
-                    bv.MaxForce = Vector3.new(1e6, 1e6, 1e6)
-                    bv.Parent = ball
-                    game.Debris:AddItem(bv, 0.1)
-                    
-                    Rayfield:Notify({Title = "GOL!", Content = "Menzil aktif: "..math.floor(dist), Duration = 1})
-                end
+        -- Hitbox'ı karakterin önüne yerleştir
+        box.Size = Vector3.new(_G.HitboxWidth, 6, _G.HitboxLen)
+        box.CFrame = hrp.CFrame * CFrame.new(0, 0, -(_G.HitboxLen / 2 + 2))
+        box.Transparency = _G.ShowHitbox and 0.8 or 1
+        
+        -- Hitbox içindeki objeleri kontrol et
+        local parts = workspace:GetPartBoundsInBox(box.CFrame, box.Size)
+        for _, part in pairs(parts) do
+            if part:IsA("BasePart") and (part.Name:lower():find("ball") or part.Name:lower():find("foot")) then
+                -- Hitbox'a değen topu 1 stud değil, baktığın yöne fırlatır
+                part.AssemblyLinearVelocity = hrp.CFrame.LookVector * _G.PushForce
             end
         end
+    else
+        box.Transparency = 1
     end
 end)
 
--- Diğer özellikler (Speed vb.)
-local PlayerTab = Window:CreateTab("👤 Karakter", 4483362458)
-PlayerTab:CreateSlider({
-   Name = "Yürüme Hızı",
-   Range = {16, 100},
-   Increment = 1,
-   CurrentValue = 25,
-   Callback = function(v) _G.WalkSpeed = v end,
-})
-
-game:GetService("RunService").RenderStepped:Connect(function()
-    if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = _G.WalkSpeed
-    end
-end)
+Rayfield:Notify({Title = "SİSTEM HAZIR", Content = "Önünde kırmızı bir alan belirecek, ona değen top gider!", Duration = 5})
