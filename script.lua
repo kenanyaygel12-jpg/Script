@@ -1,45 +1,64 @@
--- [[ KENANS HUB - MM2 ROLE TRACKER ]] --
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game:GetService("CoreGui")
+-- [[ KENANS HUB - FULL ESP & TRACKER ]] --
+local player = game.Players.LocalPlayer
+local pgui = player:WaitForChild("PlayerGui")
 
-local InfoLabel = Instance.new("TextLabel")
-InfoLabel.Parent = ScreenGui
-InfoLabel.Size = UDim2.new(0, 250, 0, 100)
-InfoLabel.Position = UDim2.new(0, 10, 0, 50)
-InfoLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-InfoLabel.BackgroundTransparency = 0.5
-InfoLabel.TextColor3 = Color3.new(1, 1, 1)
-InfoLabel.TextSize = 18
-InfoLabel.TextXAlignment = Enum.TextXAlignment.Left
+-- Ekran Yazısı (Tracker)
+if pgui:FindFirstChild("KenanTracker") then pgui.KenanTracker:Destroy() end
+local sg = Instance.new("ScreenGui", pgui)
+sg.Name = "KenanTracker"
 
--- ROLLERİ BULMA FONKSİYONU
+local label = Instance.new("TextLabel", sg)
+label.Size = UDim2.new(0, 300, 0, 40)
+label.Position = UDim2.new(0.5, -150, 0, 10)
+label.BackgroundColor3 = Color3.new(0,0,0)
+label.BackgroundTransparency = 0.5
+label.TextColor3 = Color3.new(1,1,1)
+label.Text = "KENANS HUB: ROLLER TARANIYOR..."
+
+-- ESP VE TAKİP DÖNGÜSÜ
 task.spawn(function()
     while task.wait(1) do
-        local mörder = "Bilinmiyor"
-        local sheriff = "Bilinmiyor"
-        
+        local katilIsim = "Yok"
+        local serifIsim = "Yok"
+
         for _, p in pairs(game.Players:GetPlayers()) do
-            -- Katili Bul (Envanterinde bıçak olan)
-            if p.Backpack:FindFirstChild("Knife") or (p.Character and p.Character:FindFirstChild("Knife")) then
-                mörder = p.Name
-                -- Katili Kırmızı Yap
-                if p.Character and not p.Character:FindFirstChild("Highlight") then
-                    local h = Instance.new("Highlight", p.Character)
-                    h.FillColor = Color3.new(1, 0, 0)
-                end
-            end
-            
-            -- Şerifi Bul (Envanterinde silah olan)
-            if p.Backpack:FindFirstChild("Gun") or (p.Character and p.Character:FindFirstChild("Gun")) then
-                sheriff = p.Name
-                -- Şerifi Mavi Yap
-                if p.Character and not p.Character:FindFirstChild("Highlight") then
-                    local h = Instance.new("Highlight", p.Character)
-                    h.FillColor = Color3.new(0, 0, 1)
+            if p ~= player and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                
+                -- Katili Belirle (Bıçak Kontrolü)
+                if p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife") then
+                    katilIsim = p.Name
+                    -- Kırmızı ESP ekle
+                    if not p.Character:FindFirstChild("KenanESP") then
+                        local esp = Instance.new("Highlight", p.Character)
+                        esp.Name = "KenanESP"
+                        esp.FillColor = Color3.new(1, 0, 0) -- Kırmızı
+                        esp.OutlineColor = Color3.new(1, 1, 1)
+                        esp.FillTransparency = 0.5
+                    end
+                
+                -- Şerifi Belirle (Silah Kontrolü)
+                elseif p.Backpack:FindFirstChild("Gun") or p.Character:FindFirstChild("Gun") then
+                    serifIsim = p.Name
+                    -- Mavi ESP ekle
+                    if not p.Character:FindFirstChild("KenanESP") then
+                        local esp = Instance.new("Highlight", p.Character)
+                        esp.Name = "KenanESP"
+                        esp.FillColor = Color3.new(0, 0, 1) -- Mavi
+                        esp.OutlineColor = Color3.new(1, 1, 1)
+                        esp.FillTransparency = 0.5
+                    end
+                
+                -- Masum ESP (Opsiyonel - Yeşil)
+                else
+                    if not p.Character:FindFirstChild("KenanESP") then
+                        local esp = Instance.new("Highlight", p.Character)
+                        esp.Name = "KenanESP"
+                        esp.FillColor = Color3.new(0, 1, 0) -- Yeşil
+                        esp.FillTransparency = 0.8 -- Masumlar daha silik olsun
+                    end
                 end
             end
         end
-        
-        InfoLabel.Text = " 🔪 KATİL: " .. mörder .. "\n 🎯 ŞERİF: " .. sheriff .. "\n 🛡️ KENANS HUB AKTİF"
+        label.Text = "🔪 KATİL: " .. katilIsim .. " | 🎯 ŞERİF: " .. serifIsim
     end
 end)
