@@ -1,31 +1,22 @@
--- [[ KENANS HUB V1.3 - THE ULTIMATE LOADER ]] --
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+-- [[ KENANS HUB - REMOTE SNIFFER V1 ]] --
+print("--- [ KENAN EVENT TARAMASI BAŞLADI ] ---")
 
--- Kenan'a Özel Giriş Ekranı
-local Window = Rayfield:CreateWindow({
-   Name = "🛡️ KENANS HUB | SUPREME",
-   LoadingTitle = "Sistem Deşifre Ediliyor...",
-   LoadingSubtitle = "Kenan v Voidware",
-   ConfigurationSaving = { Enabled = false }
-})
+local function hookRemote(remote)
+    if remote:IsA("RemoteEvent") then
+        print("🔥 YAKALANDI: " .. remote.Name .. " | Yolu: " .. remote:GetFullName())
+    elseif remote:IsA("RemoteFunction") then
+        print("💎 FONKSİYON: " .. remote.Name .. " | Yolu: " .. remote:GetFullName())
+    end
+end
 
-local MainTab = Window:CreateTab("🌌 Evrensel Hile", 4483362458)
+-- Mevcutları tara
+for _, v in pairs(game:GetDescendants()) do
+    pcall(function() hookRemote(v) end)
+end
 
-MainTab:CreateButton({
-   Name = "VOIDWARE NEW V2 MOTORUNU BAŞLAT",
-   Callback = function()
-       -- Senin bulduğun o en güncel commitli linki buraya gömdük
-       local commit = "4440dc446a396fcb19f17705bbdf3a453990d5f8"
-       loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VW-Add/"..commit.."/newnightsintheforest.lua", true))()
-       
-       Rayfield:Notify({
-          Title = "BAŞARILI!",
-          Content = "Kenans Hub en güncel motoru ateşledi.",
-          Duration = 5
-       })
-   end,
-})
+-- Yeni eklenenleri anlık yakala (Backdoor sızıntısı için)
+game.DescendantAdded:Connect(function(v)
+    pcall(function() hookRemote(v) end)
+end)
 
-local DebugTab = Window:CreateTab("🛠️ Sistem", 4483362458)
-DebugTab:CreateLabel("Executor Güvenlik Durumu: " .. (identifyexecutor and identifyexecutor() or "Bilinmiyor"))
-DebugTab:CreateLabel("Kenan Network Owner: Aktif")
+print("--- [ GEZİNMEYE BAŞLA, BULDUKLARINI BANA AT ] ---")
