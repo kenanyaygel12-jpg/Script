@@ -1,137 +1,102 @@
--- [[ KENANS HUB V8.0 - MM2 ULTIMATE ]] --
-local player = game.Players.LocalPlayer
-local pgui = player:WaitForChild("PlayerGui")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- ESKİ GUI VARSA TEMİZLE
-if pgui:FindFirstChild("KenanV8") then pgui.KenanV8:Destroy() end
+local Window = Rayfield:CreateWindow({
+   Name = "🛡️ KENAN HUB | MM2",
+   LoadingTitle = "Rayfield Sistemi Yükleniyor...",
+   LoadingSubtitle = "Kenan'ın Adaleti",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "KenanHubMM2",
+      FileName = "Ayarlar"
+   }
+})
 
-local sg = Instance.new("ScreenGui", pgui)
-sg.Name = "KenanV8"
+local MainTab = Window:CreateTab("🎯 Ana Menü", 4483362458)
 
--- ANA PANEL
-local frame = Instance.new("Frame", sg)
-frame.Size = UDim2.new(0, 220, 0, 320)
-frame.Position = UDim2.new(0, 15, 0.4, 0)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.Active = true
-frame.Draggable = true
+-- // HIZ AYARI (60)
+MainTab:CreateToggle({
+   Name = "Hız Hilesi (60)",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.SpeedHack = Value
+       task.spawn(function()
+           while _G.SpeedHack do
+               if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                   game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 60
+               end
+               task.wait(1)
+           end
+           if not Value then game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16 end
+       end)
+   end,
+})
 
-local title = Instance.new("TextLabel", frame)
-title.Text = "KENAN V8 MM2"
-title.Size = UDim2.new(1, 0, 0, 35)
-title.BackgroundColor3 = Color3.fromRGB(170, 0, 0)
-title.TextColor3 = Color3.new(1, 1, 1)
-title.TextSize = 18
+-- // FULL ESP (Kırmızı-Mavi-Yeşil)
+MainTab:CreateToggle({
+   Name = "Gelişmiş ESP",
+   CurrentValue = false,
+   Callback = function(Value)
+       _G.FullESP = Value
+       while _G.FullESP do
+           for _, p in pairs(game.Players:GetPlayers()) do
+               if p ~= game.Players.LocalPlayer and p.Character then
+                   local h = p.Character:FindFirstChild("Highlight") or Instance.new("Highlight", p.Character)
+                   if p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife") then
+                       h.FillColor = Color3.fromRGB(255, 0, 0) -- Katil
+                   elseif p.Backpack:FindFirstChild("Gun") or p.Character:FindFirstChild("Gun") then
+                       h.FillColor = Color3.fromRGB(0, 0, 255) -- Şerif
+                   else
+                       h.FillColor = Color3.fromRGB(0, 255, 0) -- Masum
+                   end
+               end
+           end
+           task.wait(1)
+       end
+       -- Kapatınca sil
+       if not Value then
+           for _, p in pairs(game.Players:GetPlayers()) do
+               if p.Character and p.Character:FindFirstChild("Highlight") then p.Character.Highlight:Destroy() end
+           end
+       end
+   end,
+})
 
--- DEĞİŞKENLER (ON/OFF DURUMLARI)
-_G.EspAcik = false
-_G.GörünmezlikAcik = false
+-- // GÖRÜNMEZLİK
+MainTab:CreateToggle({
+   Name = "Görünmezlik (FE)",
+   CurrentValue = false,
+   Callback = function(Value)
+       local char = game.Players.LocalPlayer.Character
+       for _, v in pairs(char:GetDescendants()) do
+           if v:IsA("BasePart") or v:IsA("Decal") then
+               v.Transparency = Value and 1 or 0
+               if v.Name == "HumanoidRootPart" then v.Transparency = 1 end
+           end
+       end
+   end,
+})
 
--- BUTON TASARIM FONKSİYONU
-local function createToggle(name, pos, callback)
-    local btn = Instance.new("TextButton", frame)
-    btn.Text = name .. ": OFF"
-    btn.Size = UDim2.new(0.9, 0, 0, 40)
-    btn.Position = UDim2.new(0.05, 0, 0, pos)
-    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 16
+local CombatTab = Window:CreateTab("⚔️ Savaş", 4483362458)
 
-    local status = false
-    btn.MouseButton1Click:Connect(function()
-        status = not status
-        btn.Text = name .. (status and ": ON" or ": OFF")
-        btn.BackgroundColor3 = status and Color3.fromRGB(0, 150, 0) or Color3.fromRGB(50, 50, 50)
-        callback(status)
-    end)
-end
+-- // KATİLE SIK (AUTOSHOOT)
+CombatTab:CreateButton({
+   Name = "Katile Sık (Silent Aim)",
+   Callback = function()
+       local target = nil
+       for _, p in pairs(game.Players:GetPlayers()) do
+           if p.Character and (p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife")) then
+               target = p.Character.HumanoidRootPart
+           end
+       end
+       local gun = game.Players.LocalPlayer.Character:FindFirstChild("Gun") or game.Players.LocalPlayer.Backpack:FindFirstChild("Gun")
+       if target and gun then
+           gun.Parent = game.Players.LocalPlayer.Character
+           task.wait(0.2)
+           local shoot = gun:FindFirstChild("Shoot") or game:GetService("ReplicatedStorage"):FindFirstChild("Shoot", true)
+           if shoot then shoot:InvokeServer(target.Position) end
+           Rayfield:Notify({Title = "İnfaz", Content = "Katile ateş edildi!", Duration = 3})
+       end
+   end,
+})
 
--- 1. HIZ AYARI (60)
-createToggle("HIZ (60)", 45, function(state)
-    if state then
-        player.Character.Humanoid.WalkSpeed = 60
-    else
-        player.Character.Humanoid.WalkSpeed = 16
-    end
-end)
-
--- 2. ESP SİSTEMİ (ON/OFF)
-createToggle("ESP", 95, function(state)
-    _G.EspAcik = state
-    if not state then
-        -- ESP Kapatıldığında parlamaları temizle
-        for _, p in pairs(game.Players:GetPlayers()) do
-            if p.Character and p.Character:FindFirstChild("KenanHighlight") then
-                p.Character.KenanHighlight:Destroy()
-            end
-        end
-    end
-end)
-
--- ESP DÖNGÜSÜ
-task.spawn(function()
-    while task.wait(0.5) do
-        if _G.EspAcik then
-            for _, p in pairs(game.Players:GetPlayers()) do
-                if p ~= player and p.Character then
-                    local h = p.Character:FindFirstChild("KenanHighlight") or Instance.new("Highlight", p.Character)
-                    h.Name = "KenanHighlight"
-                    h.OutlineColor = Color3.new(1, 1, 1)
-                    
-                    if p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife") then
-                        h.FillColor = Color3.new(1, 0, 0) -- KATİL
-                    elseif p.Backpack:FindFirstChild("Gun") or p.Character:FindFirstChild("Gun") then
-                        h.FillColor = Color3.new(0, 0, 1) -- ŞERİF
-                    else
-                        h.FillColor = Color3.new(0, 1, 0) -- MASUM
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- 3. GÖRÜNMEZLİK (ON/OFF)
-createToggle("GÖRÜNMEZ", 145, function(state)
-    local char = player.Character
-    if char then
-        for _, v in pairs(char:GetDescendants()) do
-            if v:IsA("BasePart") or v:IsA("Decal") then
-                v.Transparency = state and 1 or 0
-                if v.Name == "HumanoidRootPart" then v.Transparency = 1 end
-            end
-        end
-    end
-end)
-
--- 4. KATİLE SIK (AUTOSHOOT)
-local sikBtn = Instance.new("TextButton", frame)
-sikBtn.Text = "🔥 KATİLE SIK!"
-sikBtn.Size = UDim2.new(0.9, 0, 0, 50)
-sikBtn.Position = UDim2.new(0.05, 0, 0, 200)
-sikBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
-sikBtn.TextColor3 = Color3.new(1, 1, 1)
-sikBtn.TextSize = 18
-
-sikBtn.MouseButton1Click:Connect(function()
-    local target = nil
-    for _, p in pairs(game.Players:GetPlayers()) do
-        if p ~= player and p.Character and (p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife")) then
-            target = p.Character.HumanoidRootPart
-            break
-        end
-    end
-    if target and (player.Backpack:FindFirstChild("Gun") or player.Character:FindFirstChild("Gun")) then
-        local gun = player.Character:FindFirstChild("Gun") or player.Backpack.Gun
-        gun.Parent = player.Character
-        task.wait(0.1)
-        local shootEvent = gun:FindFirstChild("Shoot") or game:GetService("ReplicatedStorage"):FindFirstChild("Shoot", true)
-        if shootEvent then
-            shootEvent:InvokeServer(target.Position)
-            print("Katil Paket Edildi!")
-        end
-    end
-end)
-
-print("Kenans Hub V8.0 AKTİF!")
+Rayfield:Notify({Title = "Yüklendi!", Content = "Kenan Hub V9.0 Hazır kanka!", Duration = 5})
