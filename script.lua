@@ -1,71 +1,64 @@
--- [[ KENAN'S ABSOLUTE HUB - MM2 ]] --
+-- [[ KENAN'S REPAIRED HUB - V12 ]] --
 local player = game.Players.LocalPlayer
 local pgui = player:WaitForChild("PlayerGui")
 
--- Eskisini tamamen temizle
-if pgui:FindFirstChild("KenanUltraHub") then pgui.KenanUltraHub:Destroy() end
+if pgui:FindFirstChild("KenanFix") then pgui.KenanFix:Destroy() end
 
 local sg = Instance.new("ScreenGui", pgui)
-sg.Name = "KenanUltraHub"
-sg.ResetOnSpawn = false
+sg.Name = "KenanFix"
 
--- ANA PANEL (Daha Büyük ve Daha Belirgin)
-local frame = Instance.new("Frame", sg)
-frame.Size = UDim2.new(0, 220, 0, 320)
-frame.Position = UDim2.new(0.05, 0, 0.2, 0)
-frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-frame.BorderSizePixel = 3
-frame.BorderColor3 = Color3.fromRGB(255, 0, 0)
-frame.Active = true
-frame.Draggable = true
+local main = Instance.new("Frame", sg)
+main.Size = UDim2.new(0, 220, 0, 300)
+main.Position = UDim2.new(0.05, 0, 0.2, 0)
+main.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+main.Active = true
+main.Draggable = true
 
--- BAŞLIK
-local title = Instance.new("TextLabel", frame)
+-- KAYDIRMA ALANI (Butonlar kaybolmasın diye)
+local scroll = Instance.new("ScrollingFrame", main)
+scroll.Size = UDim2.new(1, 0, 1, -40)
+scroll.Position = UDim2.new(0, 0, 0, 40)
+scroll.CanvasSize = UDim2.new(0, 0, 0, 450) -- Aşağı kayabilir
+scroll.ScrollBarThickness = 5
+scroll.BackgroundTransparency = 1
+
+local title = Instance.new("TextLabel", main)
+title.Text = "KENAN PRO HUB"
 title.Size = UDim2.new(1, 0, 0, 40)
-title.BackgroundColor3 = Color3.fromRGB(180, 0, 0)
-title.Text = "KENAN'S MM2 MENU"
-title.TextColor3 = Color3.new(1, 1, 1)
-title.TextSize = 20
-title.Font = Enum.Font.SourceSansBold
+title.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+title.TextColor3 = Color3.new(1,1,1)
 
--- BUTON YAPICI (Hepsini Alt Alta Dizer)
-local function createButton(name, pos, color, callback)
-    local btn = Instance.new("TextButton", frame)
-    btn.Text = name
-    btn.Size = UDim2.new(0.9, 0, 0, 50) -- Butonlar kocaman
-    btn.Position = UDim2.new(0.05, 0, 0, pos)
-    btn.BackgroundColor3 = color
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.SourceSansBold
-    btn.TextSize = 18
-    btn.BorderSizePixel = 0
-    btn.MouseButton1Click:Connect(callback)
-    
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 8)
+local function addBtn(name, yPos, color, func)
+    local b = Instance.new("TextButton", scroll)
+    b.Text = name
+    b.Size = UDim2.new(0.9, 0, 0, 45)
+    b.Position = UDim2.new(0.05, 0, 0, yPos)
+    b.BackgroundColor3 = color
+    b.TextColor3 = Color3.new(1, 1, 1)
+    b.Font = Enum.Font.SourceSansBold
+    b.TextSize = 16
+    b.MouseButton1Click:Connect(func)
+    Instance.new("UICorner", b)
 end
 
--- 1. HIZ BUTONU
-createButton("⚡ HIZ: 60", 50, Color3.fromRGB(50, 50, 50), function()
+-- 1. HIZ
+addBtn("HIZI KÖKLE (60)", 10, Color3.fromRGB(50, 50, 50), function()
     player.Character.Humanoid.WalkSpeed = 60
 end)
 
--- 2. ESP BUTONU (KNIFE=KIRMIZI, GUN=MAVİ, DİĞER=YEŞİL)
-createButton("👁️ ESP AÇ", 110, Color3.fromRGB(50, 50, 50), function()
+-- 2. ESP (Backpack Kontrollü)
+addBtn("ESP: ROLLERİ GÖR", 65, Color3.fromRGB(50, 50, 50), function()
     task.spawn(function()
         while task.wait(1) do
             for _, p in pairs(game.Players:GetPlayers()) do
                 if p ~= player and p.Character then
                     local h = p.Character:FindFirstChild("Highlight") or Instance.new("Highlight", p.Character)
-                    local inv = p.Backpack
-                    local char = p.Character
-                    
-                    if inv:FindFirstChild("Knife") or char:FindFirstChild("Knife") then
-                        h.FillColor = Color3.new(1, 0, 0) -- MURDERER
-                    elseif inv:FindFirstChild("Gun") or char:FindFirstChild("Gun") or inv:FindFirstChild("Revolver") or char:FindFirstChild("Revolver") then
-                        h.FillColor = Color3.new(0, 0, 1) -- SHERIFF
+                    if p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife") then
+                        h.FillColor = Color3.new(1, 0, 0) -- Murderer
+                    elseif p.Backpack:FindFirstChild("Gun") or p.Backpack:FindFirstChild("Revolver") or p.Character:FindFirstChild("Gun") then
+                        h.FillColor = Color3.new(0, 0, 1) -- Sheriff
                     else
-                        h.FillColor = Color3.new(0, 1, 0) -- INNOCENT
+                        h.FillColor = Color3.new(0, 1, 0) -- Innocent
                     end
                 end
             end
@@ -73,33 +66,28 @@ createButton("👁️ ESP AÇ", 110, Color3.fromRGB(50, 50, 50), function()
     end)
 end)
 
--- 3. GÖRÜNMEZLİK (HUMANOID ROOT HARİÇ)
-createButton("👻 GÖRÜNMEZ OL", 170, Color3.fromRGB(50, 50, 50), function()
-    local char = player.Character
-    for _, v in pairs(char:GetDescendants()) do
-        if (v:IsA("BasePart") or v:IsA("Decal")) and v.Name ~= "HumanoidRootPart" then
+-- 3. GÖRÜNMEZLİK
+addBtn("GÖRÜNMEZ OL", 120, Color3.fromRGB(50, 50, 50), function()
+    for _, v in pairs(player.Character:GetDescendants()) do
+        if v:IsA("BasePart") and v.Name ~= "HumanoidRootPart" then
             v.Transparency = (v.Transparency == 1 and 0 or 1)
         end
     end
 end)
 
--- 4. AUTO SHOOT (KATİLE SIK)
-createButton("🎯 KATİLE SIK!", 230, Color3.fromRGB(150, 0, 0), function()
+-- 4. AUTO SHOOT
+addBtn("🎯 KATİLE SIK!", 175, Color3.fromRGB(180, 0, 0), function()
     local target = nil
     for _, p in pairs(game.Players:GetPlayers()) do
         if p.Character and (p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife")) then
             target = p.Character.HumanoidRootPart
         end
     end
-    
-    local gun = player.Character:FindFirstChild("Gun") or player.Backpack:FindFirstChild("Gun") or player.Character:FindFirstChild("Revolver") or player.Backpack:FindFirstChild("Revolver")
-    
+    local gun = player.Character:FindFirstChild("Gun") or player.Backpack:FindFirstChild("Gun") or player.Backpack:FindFirstChild("Revolver")
     if target and gun then
         gun.Parent = player.Character
         task.wait(0.1)
         player.Character.HumanoidRootPart.CFrame = CFrame.new(player.Character.HumanoidRootPart.Position, target.Position)
         gun:Activate()
-        local event = gun:FindFirstChild("Shoot") or game:GetService("ReplicatedStorage"):FindFirstChild("Shoot", true)
-        if event then event:FireServer(target.Position) end
     end
 end)
