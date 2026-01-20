@@ -1,69 +1,96 @@
--- [[ KENANS HUB - PRO SPEED & GUN ESP ]] --
+-- [[ KENANS HUB V7.0 - ULTRA MM2 ]] --
 local player = game.Players.LocalPlayer
 local pgui = player:WaitForChild("PlayerGui")
 
--- Ekran Yazısı (Gelişmiş)
-if pgui:FindFirstChild("KenanPro") then pgui.KenanPro:Destroy() end
+-- ESKİSİNİ SİL
+if pgui:FindFirstChild("KenanUltra") then pgui.KenanUltra:Destroy() end
+
+-- GUI OLUŞTURMA
 local sg = Instance.new("ScreenGui", pgui)
-sg.Name = "KenanPro"
+sg.Name = "KenanUltra"
 
-local info = Instance.new("TextLabel", sg)
-info.Size = UDim2.new(0, 400, 0, 60)
-info.Position = UDim2.new(0.5, -200, 0, 10)
-info.BackgroundColor3 = Color3.new(0, 0, 0)
-info.BackgroundTransparency = 0.4
-info.TextColor3 = Color3.new(1, 1, 0) -- Sarı yazı
-info.TextSize = 20
-info.Text = "KENANS HUB: SİSTEM AKTİF"
+local frame = Instance.new("Frame", sg)
+frame.Size = UDim2.new(0, 200, 0, 280)
+frame.Position = UDim2.new(0, 10, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.Active = true
+frame.Draggable = true
 
--- HIZ AYARI (45 İDEALDİR)
-if player.Character and player.Character:FindFirstChild("Humanoid") then
-    player.Character.Humanoid.WalkSpeed = 45
+local title = Instance.new("TextLabel", frame)
+title.Text = "KENAN MM2 HUB"
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+title.TextColor3 = Color3.new(1, 1, 1)
+
+-- HIZ AYARI (45)
+player.Character.Humanoid.WalkSpeed = 45
+
+-- BUTON YAPICI FONKSİYON
+local function createBtn(name, pos, callback)
+    local btn = Instance.new("TextButton", frame)
+    btn.Text = name
+    btn.Size = UDim2.new(0.9, 0, 0, 35)
+    btn.Position = UDim2.new(0.05, 0, 0, pos)
+    btn.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.MouseButton1Click:Connect(callback)
+    return btn
 end
 
--- ANA DÖNGÜ
+-- ESP SİSTEMİ (KATİL: KIRMIZI, ŞERİF: MAVİ, MASUM: YEŞİL)
 task.spawn(function()
-    while task.wait(0.5) do
-        local gunDropped = false
-        
-        -- 1. Yerdeki Silahı Kontrol Et
-        local droppedGun = workspace:FindFirstChild("GunDrop")
-        if droppedGun then
-            gunDropped = true
-            -- Silahın yerini parlat
-            if not droppedGun:FindFirstChild("GunLight") then
-                local highlight = Instance.new("Highlight", droppedGun)
-                highlight.Name = "GunLight"
-                highlight.FillColor = Color3.new(1, 1, 0) -- Parlak Sarı
-                highlight.OutlineColor = Color3.new(1, 1, 1)
-            end
-        end
-
-        -- 2. Katil ve Şerif Tarama
-        local k = "Bilinmiyor"
-        local s = "Bilinmiyor"
+    while task.wait(1) do
         for _, p in pairs(game.Players:GetPlayers()) do
-            if p.Character then
+            if p ~= player and p.Character then
+                local highlight = p.Character:FindFirstChild("Highlight") or Instance.new("Highlight", p.Character)
                 if p.Backpack:FindFirstChild("Knife") or p.Character:FindFirstChild("Knife") then
-                    k = p.Name
+                    highlight.FillColor = Color3.new(1, 0, 0) -- KATİL
                 elseif p.Backpack:FindFirstChild("Gun") or p.Character:FindFirstChild("Gun") then
-                    s = p.Name
+                    highlight.FillColor = Color3.new(0, 0, 1) -- ŞERİF
+                else
+                    highlight.FillColor = Color3.new(0, 1, 0) -- MASUM
                 end
             end
         end
-
-        -- 3. Yazıyı Güncelle
-        if gunDropped then
-            info.Text = "⚠️ SİLAH YERDE! KOŞ AL! ⚠️\n🔪 KATİL: " .. k
-            info.TextColor3 = Color3.new(1, 0, 0) -- Silah yerdeyse yazı kırmızı olsun
-        else
-            info.Text = "🔪 KATİL: " .. k .. " | 🎯 ŞERİF: " .. s
-            info.TextColor3 = Color3.new(1, 1, 1)
-        end
-        
-        -- Karakter her doğduğunda hızı tekrar ayarla
-        if player.Character and player.Character:FindFirstChild("Humanoid") then
-            player.Character.Humanoid.WalkSpeed = 45
-        end
     end
 end)
+
+-- GÖRÜNMEZLİK (FE Invisible)
+createBtn("Görünmezlik", 40, function()
+    local char = player.Character
+    for _, v in pairs(char:GetDescendants()) do
+        if v:IsA("BasePart") or v:IsA("Decal") then
+            v.Transparency = 1
+        end
+    end
+    print("Görünmezlik Aktif!")
+end)
+
+-- KATİLE SIK (SILENT AIM)
+createBtn("Katile Sık!", 85, function()
+    local target = nil
+    for _, p in pairs(game.Players:GetPlayers()) do
+        if p.Backpack:FindFirstChild("Knife") or (p.Character and p.Character:FindFirstChild("Knife")) then
+            target = p.Character
+        end
+    end
+    
+    if target and player.Character:FindFirstChild("Gun") then
+        -- Katile doğru otomatik nişan al ve ateş et
+        player.Character.HumanoidRootPart.CFrame = CFrame.new(player.Character.HumanoidRootPart.Position, target.HumanoidRootPart.Position)
+        print("Katile nişan alındı!")
+        -- Not: Bazı executorlar Mouse1 click simülasyonu ister
+    else
+        print("Ya elinde silah yok ya da katil bulunamadı!")
+    end
+end)
+
+createBtn("Hızı 45 Yap", 130, function()
+    player.Character.Humanoid.WalkSpeed = 45
+end)
+
+createBtn("Karakter Reset", 175, function()
+    player.Character:BreakJoints()
+end)
+
+print("Kenans Hub V7.0 Yüklendi!")
