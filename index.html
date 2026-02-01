@@ -2,65 +2,72 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KENAN USTA | İNŞAATIN KRALI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="format-detection" content="telephone=yes">
+    <title>KENAN USTA | ANTALYA RESMİ WEB SİTESİ</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
 
     <style>
-        :root { --gold: #FFD700; --dark: #000; --gray: #0a0a0a; --white: #ffffff; }
+        :root { --gold: #FFD700; --dark: #000; --wa: #25D366; --gray: #0a0a0a; }
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Montserrat', sans-serif; }
-        body { background: var(--dark); color:var(--white); overflow-x:hidden; scroll-behavior: smooth; }
+        body { background: var(--dark); color:#fff; overflow-x:hidden; scroll-behavior: smooth; }
 
-        /* --- LOGO & NAV --- */
-        nav { position: fixed; top:0; width:100%; padding:20px; background:rgba(0,0,0,0.9); display:flex; justify-content:space-between; z-index:1000; border-bottom:1px solid var(--gold); }
-        .logo { font-family:'Orbitron'; color:var(--gold); font-size:1.2rem; }
+        /* --- ÜST MENÜ --- */
+        nav { position: fixed; top:0; width:100%; padding:15px 5%; background:rgba(0,0,0,0.9); display:flex; justify-content:space-between; align-items:center; z-index:1000; border-bottom:1px solid var(--gold); }
+        .logo { font-family:'Orbitron'; color:var(--gold); font-size:1.1rem; letter-spacing:2px; }
 
-        /* --- HERO --- */
+        /* --- GİRİŞ (HERO) --- */
         .hero {
             height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
             background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.pexels.com/photos/157811/pexels-photo-157811.jpeg?auto=compress&cs=tinysrgb&w=1260');
-            background-size:cover; background-position:center; text-align:center;
+            background-size:cover; background-position:center; text-align:center; padding: 0 20px;
         }
-        .hero h1 { font-family:'Orbitron'; font-size: 3rem; color:var(--gold); margin-bottom:20px; animation: glow 2s infinite alternate; }
-        @keyframes glow { from { text-shadow: 0 0 10px var(--gold); } to { text-shadow: 0 0 30px var(--gold), 0 0 40px orange; } }
+        .hero h1 { font-family:'Orbitron'; font-size: clamp(2.5rem, 10vw, 4rem); color:var(--gold); text-shadow: 0 0 20px rgba(255,215,0,0.6); margin-bottom:10px; }
+        .hero p { letter-spacing: 5px; font-weight: bold; color: #ccc; margin-bottom: 30px; }
 
-        /* --- BUTONLAR --- */
-        .btn-wrap { display:flex; flex-direction:column; gap:15px; width:85%; max-width:400px; }
-        .action-btn {
-            padding:20px; border-radius:12px; font-weight:900; font-size:1.2rem;
-            text-decoration:none; text-align:center; border:2px solid var(--gold); transition:0.3s;
+        /* --- AKSİYON BUTONLARI --- */
+        .btn-container { display:flex; flex-direction:column; gap:15px; width:100%; max-width:380px; }
+        .m-btn {
+            padding:20px; border-radius:15px; font-weight:900; font-size:1.2rem;
+            text-decoration:none; text-align:center; display:flex; align-items:center; justify-content:center; gap:12px;
+            transition: 0.3s; border:none; cursor:pointer;
         }
-        .btn-call { background:var(--gold); color:black; }
-        .btn-mail { background:transparent; color:white; }
+        .m-wa { background: var(--wa); color: #fff; box-shadow: 0 10px 20px rgba(37,211,102,0.2); }
+        .m-call { background: var(--gold); color: #000; }
+        .m-mail { background: #fff; color: #000; }
 
-        /* --- SECTION GENEL --- */
-        section { padding: 100px 5%; border-bottom: 1px solid #111; }
-        h2.title { font-family:'Orbitron'; color:var(--gold); font-size:2rem; text-align:center; margin-bottom:50px; }
+        /* --- GENEL SEKSİYONLAR --- */
+        section { padding: 100px 8%; border-bottom: 1px solid #111; }
+        .sec-title { font-family:'Orbitron'; color:var(--gold); font-size:1.8rem; text-align:center; margin-bottom:50px; position:relative; }
+        .sec-title::after { content:''; display:block; width:60px; height:3px; background:var(--gold); margin: 15px auto; }
 
         /* --- GALERİ --- */
-        .gallery-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
-        .g-img { height:350px; border-radius:15px; overflow:hidden; border:1px solid #333; position:relative; }
-        .g-img img { width:100%; height:100%; object-fit:cover; transition:0.5s; }
-        .g-img:hover img { transform:scale(1.1); filter:grayscale(0); }
-
-        /* --- SİTEYİ UZATAN BİLGİ KARTLARI --- */
-        .stats { display:flex; justify-content:space-around; flex-wrap:wrap; gap:20px; text-align:center; }
-        .stat-card { background:var(--gray); padding:40px; border-radius:20px; min-width:200px; border:1px solid #222; }
-        .stat-card h3 { font-size:2.5rem; color:var(--gold); }
+        .gallery-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px; }
+        .g-card { height:350px; border-radius:20px; overflow:hidden; border:1px solid #222; position:relative; }
+        .g-card img { width:100%; height:100%; object-fit:cover; transition: 0.6s; }
+        .g-card:hover img { transform: scale(1.1); filter: brightness(0.7); }
 
         /* --- YORUM SİSTEMİ --- */
-        .comment-box { background:var(--gray); padding:30px; border-radius:20px; border:1px solid var(--gold); }
-        .comment-box input, .comment-box textarea { width:100%; padding:15px; margin-bottom:10px; background:#000; color:white; border:1px solid #333; border-radius:10px; }
-        .c-btn { width:100%; padding:15px; background:var(--gold); color:black; font-weight:900; border:none; border-radius:10px; cursor:pointer; }
-        .comment-list { margin-top:30px; max-height:500px; overflow-y:auto; }
-        .comment-item { background:#050505; padding:20px; border-radius:15px; margin-bottom:10px; border-left:5px solid var(--gold); }
+        .comment-box { background:var(--gray); padding:30px; border-radius:25px; border:1px solid var(--gold); }
+        .comment-box input, .comment-box textarea { 
+            width:100%; padding:15px; margin-bottom:10px; background:#000; color:#fff; border:1px solid #333; border-radius:12px; font-size: 1rem;
+        }
+        .post-btn { width:100%; padding:18px; background:var(--gold); color:#000; font-weight:900; border:none; border-radius:12px; cursor:pointer; }
+        .comments-display { margin-top:30px; max-height: 400px; overflow-y: auto; }
+        .c-item { background:#050505; padding:20px; border-radius:15px; margin-bottom:12px; border-left:5px solid var(--gold); animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
-        /* --- DOCK --- */
-        .dock { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:space-around; padding:15px; border-top:1px solid var(--gold); z-index:1000; }
-        .dock a { color:var(--gold); font-size:1.5rem; }
+        /* --- EKSTRA UZUNLUK İÇİN TASARIM --- */
+        .extra-content { background: linear-gradient(to bottom, #000, #0a0a0a, #000); padding: 150px 8%; text-align: center; }
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:40px; }
+        .f-card i { font-size: 3rem; color:var(--gold); margin-bottom:20px; }
+
+        /* --- ALT SABİT DOCK --- */
+        .bottom-nav { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:space-around; padding:15px 0; border-top:1px solid var(--gold); z-index:1000; }
+        .bottom-nav a { color:var(--gold); font-size:1.7rem; }
 
     </style>
 </head>
@@ -68,75 +75,80 @@
 
 <nav>
     <div class="logo">KENAN USTA</div>
-    <a href="tel:05512147241" style="color:var(--gold); text-decoration:none; font-weight:bold;">HEMEN ARA</a>
+    <a href="tel:05512147241" style="text-decoration:none; color:var(--gold); font-weight:bold;"><i class="fas fa-phone"></i> ARA</a>
 </nav>
 
 <section class="hero">
     <div data-aos="zoom-in">
+        <p>ANTALYA / KUMLUCA</p>
         <h1>KENAN USTA</h1>
-        <p style="letter-spacing:10px;">ANTALYA / KUMLUCA</p><br>
-        <div class="btn-wrap">
-            <a href="tel:05512147241" class="action-btn btn-call">📞 TIKLA ARA</a>
-            <a href="mailto:kenanyaygel0735@gmail.com?subject=Is%20Teklifi" class="action-btn btn-mail">✉️ E-POSTA GÖNDER</a>
+        <div class="btn-container">
+            <a href="https://wa.me/905512147241?text=Merhaba%20Kenan%20Usta%2C%20bir%20iş%20teklifim%20var." class="m-btn m-wa">
+                <i class="fab fa-whatsapp"></i> WHATSAPP'TAN YAZ
+            </a>
+            <a href="tel:05512147241" class="m-btn m-call">
+                <i class="fas fa-phone-alt"></i> USTAYI HEMEN ARA
+            </a>
+            <a href="mailto:kenanyaygel0735@gmail.com" class="m-btn m-mail">
+                <i class="fas fa-envelope"></i> GMAIL GÖNDER
+            </a>
         </div>
     </div>
 </section>
 
-<section>
-    <div class="stats">
-        <div class="stat-card" data-aos="fade-up">
-            <h3>20+</h3>
-            <p>Yıllık Tecrübe</p>
-        </div>
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
-            <h3>500+</h3>
-            <p>Mutlu Müşteri</p>
-        </div>
-        <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
-            <h3>100%</h3>
-            <p>Garantili İşçilik</p>
-        </div>
-    </div>
-</section>
-
-<section>
-    <h2 class="title">PROJE GALERİSİ</h2>
+<section id="galeri">
+    <h2 class="sec-title">TAMAMLANAN PROJELER</h2>
     <div class="gallery-grid">
-        <div class="g-img" data-aos="flip-left">
-            <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="Tavan">
+        <div class="g-card" data-aos="fade-up"><img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg"></div>
+        <div class="g-card" data-aos="fade-up" data-aos-delay="100"><img src="https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg"></div>
+        <div class="g-card" data-aos="fade-up" data-aos-delay="200"><img src="https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg"></div>
+    </div>
+</section>
+
+<section class="extra-content">
+    <h2 class="sec-title">NEDEN BİZ?</h2>
+    <div class="feature-grid">
+        <div class="f-card" data-aos="flip-left">
+            <i class="fas fa-tools"></i>
+            <h3>Usta İşçilik</h3>
+            <p>20 yıllık tecrübe ile milimetrik hesaplamalar ve kusursuz yüzeyler.</p>
         </div>
-        <div class="g-img" data-aos="flip-right">
-            <img src="https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg" alt="İnşaat">
+        <div class="f-card" data-aos="flip-left" data-aos-delay="100">
+            <i class="fas fa-shield-alt"></i>
+            <h3>Garantili Hizmet</h3>
+            <p>Yaptığımız tüm alçıpan ve asma tavan işleri 5 yıl garantimiz altındadır.</p>
         </div>
-        <div class="g-img" data-aos="flip-left">
-            <img src="https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg" alt="Dekor">
+        <div class="f-card" data-aos="flip-left" data-aos-delay="200">
+            <i class="fas fa-truck-loading"></i>
+            <h3>Temiz Çalışma</h3>
+            <p>İş bitiminde evinizi/ofisinizi pırıl pırıl teslim ediyoruz.</p>
         </div>
     </div>
 </section>
 
 <section style="background:#050505; text-align:center;">
-    <h2 class="title">TANITIM FİLMİ</h2>
-    <div style="max-width:800px; margin:0 auto; border:2px solid var(--gold); border-radius:20px; overflow:hidden;">
-        <iframe width="100%" height="400" src="https://www.youtube.com/embed/GMI_eAhFQrI" frameborder="0" allowfullscreen></iframe>
+    <h2 class="sec-title">VİDEO TANITIM</h2>
+    <div style="max-width:800px; margin:0 auto; border:3px solid var(--gold); border-radius:20px; overflow:hidden;" data-aos="zoom-in-up">
+        <iframe width="100%" height="450" src="https://www.youtube.com/embed/GMI_eAhFQrI" frameborder="0" allowfullscreen></iframe>
     </div>
 </section>
 
-<section id="comments">
+<section id="yorumlar">
     <div class="comment-box" data-aos="fade-up">
-        <h2 style="color:var(--gold); margin-bottom:20px;">YORUM BIRAKIN</h2>
-        <input type="text" id="uName" placeholder="Adınız">
-        <textarea id="uText" rows="4" placeholder="Mesajınız..."></textarea>
-        <button class="c-btn" onclick="postComment()">KAYDET VE GÖNDER</button>
-        <div id="uList" class="comment-list"></div>
+        <h2 style="color:var(--gold); margin-bottom:20px;">MÜŞTERİ YORUMLARI</h2>
+        <input type="text" id="userName" placeholder="Adınız Soyadınız">
+        <textarea id="userText" rows="4" placeholder="Kenan Usta hakkında düşünceleriniz..."></textarea>
+        <button class="post-btn" onclick="addComment()">YORUMU PAYLAŞ</button>
+        <div id="commentList" class="comments-display"></div>
     </div>
 </section>
 
-<section style="height:1000px; text-align:center; opacity:0.1;">
-    <p>Aşağı kaydırmaya devam edin...</p>
-    <p>Kenan Usta Kalitesi...</p>
-</section>
+<div style="height:1000px; background:linear-gradient(#000, #111); text-align:center; padding-top:100px; color:#222;">
+    <p>Kenan Usta Kalitesiyle Antalya'nın Her Yerindeyiz...</p>
+    <p>Asma Tavan | Alçıpan | Bölme Duvar | Dekorasyon</p>
+</div>
 
-<div class="dock">
+<div class="bottom-nav">
     <a href="tel:05512147241"><i class="fas fa-phone"></i></a>
     <a href="https://wa.me/905512147241"><i class="fab fa-whatsapp"></i></a>
     <a href="mailto:kenanyaygel0735@gmail.com"><i class="fas fa-envelope"></i></a>
@@ -144,29 +156,36 @@
 
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    AOS.init();
+    AOS.init({ duration: 1000, once: true });
 
+    // Yorumları Hafızadan Yükle (Localstorage)
     window.onload = function() { loadComments(); }
 
-    function postComment() {
-        let n = document.getElementById('uName').value;
-        let t = document.getElementById('uText').value;
+    function addComment() {
+        let n = document.getElementById('userName').value;
+        let t = document.getElementById('userText').value;
         if(n && t) {
-            let list = JSON.parse(localStorage.getItem('kenan_v8')) || [];
-            list.push({ad: n, yorum: t});
-            localStorage.setItem('kenan_v8', JSON.stringify(list));
-            document.getElementById('uName').value = "";
-            document.getElementById('uText').value = "";
+            let list = JSON.parse(localStorage.getItem('kenan_usta_vfinal')) || [];
+            list.push({ad: n, yorum: t, tarih: new Date().toLocaleDateString()});
+            localStorage.setItem('kenan_usta_vfinal', JSON.stringify(list));
+            document.getElementById('userName').value = "";
+            document.getElementById('userText').value = "";
             loadComments();
+        } else {
+            alert("Lütfen tüm alanları doldur kanka!");
         }
     }
 
     function loadComments() {
-        let box = document.getElementById('uList');
-        let list = JSON.parse(localStorage.getItem('kenan_v8')) || [];
+        let box = document.getElementById('commentList');
+        let list = JSON.parse(localStorage.getItem('kenan_usta_vfinal')) || [];
         box.innerHTML = "";
-        list.reverse().forEach(x => {
-            box.innerHTML += `<div class="comment-item"><b>${x.ad}:</b> <p>${x.yorum}</p></div>`;
+        list.reverse().forEach(c => {
+            box.innerHTML += `
+                <div class="c-item">
+                    <b>${c.ad}</b> <small style="color:#666; float:right;">${c.tarih}</small>
+                    <p style="margin-top:8px; color:#ccc;">${c.yorum}</p>
+                </div>`;
         });
     }
 </script>
