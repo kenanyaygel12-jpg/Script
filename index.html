@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KENAN USTA | İNŞAATIN KRALI</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <style>
+        :root { --gold: #FFD700; --dark: #000; --gray: #0a0a0a; --white: #ffffff; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Montserrat', sans-serif; }
+        body { background: var(--dark); color:var(--white); overflow-x:hidden; scroll-behavior: smooth; }
+
+        /* --- LOGO & NAV --- */
+        nav { position: fixed; top:0; width:100%; padding:20px; background:rgba(0,0,0,0.9); display:flex; justify-content:space-between; z-index:1000; border-bottom:1px solid var(--gold); }
+        .logo { font-family:'Orbitron'; color:var(--gold); font-size:1.2rem; }
+
+        /* --- HERO --- */
+        .hero {
+            height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.pexels.com/photos/157811/pexels-photo-157811.jpeg?auto=compress&cs=tinysrgb&w=1260');
+            background-size:cover; background-position:center; text-align:center;
+        }
+        .hero h1 { font-family:'Orbitron'; font-size: 3rem; color:var(--gold); margin-bottom:20px; animation: glow 2s infinite alternate; }
+        @keyframes glow { from { text-shadow: 0 0 10px var(--gold); } to { text-shadow: 0 0 30px var(--gold), 0 0 40px orange; } }
+
+        /* --- BUTONLAR --- */
+        .btn-wrap { display:flex; flex-direction:column; gap:15px; width:85%; max-width:400px; }
+        .action-btn {
+            padding:20px; border-radius:12px; font-weight:900; font-size:1.2rem;
+            text-decoration:none; text-align:center; border:2px solid var(--gold); transition:0.3s;
+        }
+        .btn-call { background:var(--gold); color:black; }
+        .btn-mail { background:transparent; color:white; }
+
+        /* --- SECTION GENEL --- */
+        section { padding: 100px 5%; border-bottom: 1px solid #111; }
+        h2.title { font-family:'Orbitron'; color:var(--gold); font-size:2rem; text-align:center; margin-bottom:50px; }
+
+        /* --- GALERİ --- */
+        .gallery-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; }
+        .g-img { height:350px; border-radius:15px; overflow:hidden; border:1px solid #333; position:relative; }
+        .g-img img { width:100%; height:100%; object-fit:cover; transition:0.5s; }
+        .g-img:hover img { transform:scale(1.1); filter:grayscale(0); }
+
+        /* --- SİTEYİ UZATAN BİLGİ KARTLARI --- */
+        .stats { display:flex; justify-content:space-around; flex-wrap:wrap; gap:20px; text-align:center; }
+        .stat-card { background:var(--gray); padding:40px; border-radius:20px; min-width:200px; border:1px solid #222; }
+        .stat-card h3 { font-size:2.5rem; color:var(--gold); }
+
+        /* --- YORUM SİSTEMİ --- */
+        .comment-box { background:var(--gray); padding:30px; border-radius:20px; border:1px solid var(--gold); }
+        .comment-box input, .comment-box textarea { width:100%; padding:15px; margin-bottom:10px; background:#000; color:white; border:1px solid #333; border-radius:10px; }
+        .c-btn { width:100%; padding:15px; background:var(--gold); color:black; font-weight:900; border:none; border-radius:10px; cursor:pointer; }
+        .comment-list { margin-top:30px; max-height:500px; overflow-y:auto; }
+        .comment-item { background:#050505; padding:20px; border-radius:15px; margin-bottom:10px; border-left:5px solid var(--gold); }
+
+        /* --- DOCK --- */
+        .dock { position:fixed; bottom:0; width:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:space-around; padding:15px; border-top:1px solid var(--gold); z-index:1000; }
+        .dock a { color:var(--gold); font-size:1.5rem; }
+
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">KENAN USTA</div>
+    <a href="tel:05512147241" style="color:var(--gold); text-decoration:none; font-weight:bold;">HEMEN ARA</a>
+</nav>
+
+<section class="hero">
+    <div data-aos="zoom-in">
+        <h1>KENAN USTA</h1>
+        <p style="letter-spacing:10px;">ANTALYA / KUMLUCA</p><br>
+        <div class="btn-wrap">
+            <a href="tel:05512147241" class="action-btn btn-call">📞 TIKLA ARA</a>
+            <a href="mailto:kenanyaygel0735@gmail.com?subject=Is%20Teklifi" class="action-btn btn-mail">✉️ E-POSTA GÖNDER</a>
+        </div>
+    </div>
+</section>
+
+<section>
+    <div class="stats">
+        <div class="stat-card" data-aos="fade-up">
+            <h3>20+</h3>
+            <p>Yıllık Tecrübe</p>
+        </div>
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="100">
+            <h3>500+</h3>
+            <p>Mutlu Müşteri</p>
+        </div>
+        <div class="stat-card" data-aos="fade-up" data-aos-delay="200">
+            <h3>100%</h3>
+            <p>Garantili İşçilik</p>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2 class="title">PROJE GALERİSİ</h2>
+    <div class="gallery-grid">
+        <div class="g-img" data-aos="flip-left">
+            <img src="https://images.pexels.com/photos/1571460/pexels-photo-1571460.jpeg" alt="Tavan">
+        </div>
+        <div class="g-img" data-aos="flip-right">
+            <img src="https://images.pexels.com/photos/2219024/pexels-photo-2219024.jpeg" alt="İnşaat">
+        </div>
+        <div class="g-img" data-aos="flip-left">
+            <img src="https://images.pexels.com/photos/271816/pexels-photo-271816.jpeg" alt="Dekor">
+        </div>
+    </div>
+</section>
+
+<section style="background:#050505; text-align:center;">
+    <h2 class="title">TANITIM FİLMİ</h2>
+    <div style="max-width:800px; margin:0 auto; border:2px solid var(--gold); border-radius:20px; overflow:hidden;">
+        <iframe width="100%" height="400" src="https://www.youtube.com/embed/GMI_eAhFQrI" frameborder="0" allowfullscreen></iframe>
+    </div>
+</section>
+
+<section id="comments">
+    <div class="comment-box" data-aos="fade-up">
+        <h2 style="color:var(--gold); margin-bottom:20px;">YORUM BIRAKIN</h2>
+        <input type="text" id="uName" placeholder="Adınız">
+        <textarea id="uText" rows="4" placeholder="Mesajınız..."></textarea>
+        <button class="c-btn" onclick="postComment()">KAYDET VE GÖNDER</button>
+        <div id="uList" class="comment-list"></div>
+    </div>
+</section>
+
+<section style="height:1000px; text-align:center; opacity:0.1;">
+    <p>Aşağı kaydırmaya devam edin...</p>
+    <p>Kenan Usta Kalitesi...</p>
+</section>
+
+<div class="dock">
+    <a href="tel:05512147241"><i class="fas fa-phone"></i></a>
+    <a href="https://wa.me/905512147241"><i class="fab fa-whatsapp"></i></a>
+    <a href="mailto:kenanyaygel0735@gmail.com"><i class="fas fa-envelope"></i></a>
+</div>
+
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+
+    window.onload = function() { loadComments(); }
+
+    function postComment() {
+        let n = document.getElementById('uName').value;
+        let t = document.getElementById('uText').value;
+        if(n && t) {
+            let list = JSON.parse(localStorage.getItem('kenan_v8')) || [];
+            list.push({ad: n, yorum: t});
+            localStorage.setItem('kenan_v8', JSON.stringify(list));
+            document.getElementById('uName').value = "";
+            document.getElementById('uText').value = "";
+            loadComments();
+        }
+    }
+
+    function loadComments() {
+        let box = document.getElementById('uList');
+        let list = JSON.parse(localStorage.getItem('kenan_v8')) || [];
+        box.innerHTML = "";
+        list.reverse().forEach(x => {
+            box.innerHTML += `<div class="comment-item"><b>${x.ad}:</b> <p>${x.yorum}</p></div>`;
+        });
+    }
+</script>
+
+</body>
+</html>
